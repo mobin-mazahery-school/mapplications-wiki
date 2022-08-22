@@ -1,6 +1,4 @@
 from flask import Flask, send_from_directory, redirect
-import os
-import re
 import requests
 
 app = Flask(__name__)
