@@ -7,8 +7,8 @@ app = Flask(__name__)
 
 @app.route("/download/MInstagramBot")
 def download():
-    ver = requests.get("https://m-applications.cf/releases/latest_version.txt").content
-    accesscode = requests.get("https://m-applications.cf/gak.php").content
+    ver = requests.get("https://m-applications.cf/releases/latest_version.txt").content.decode("utf-8")
+    accesscode = requests.get("https://m-applications.cf/gak.php").content.decode("utf-8")
     return redirect(f"https://m-applications.cf/download.php?version={ver}&k={accesscode}")
 
 @app.route("/", defaults={"path": "index"}, methods=["GET"])
