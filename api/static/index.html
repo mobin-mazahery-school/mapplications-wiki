@@ -18,22 +18,26 @@
                 href="/about">درباره</a>
         </div>
     </header>
-    <div class="body">
-        <center style="margin-top: -20px;">
-            <h1>درباره من</h1>
-        </center>
-        <p dir="rtl" style="font-size: large;text-align: justify;">سلام، من <b>مبین مظاهری طامه</b> هستم. دانش آموز پایه
-            دهم و علاقه مند به کامپیوتر و برنامه نویسی.</p>
-        <p dir="rtl" style="font-size: large;margin-top: 3px;text-align: justify;">من در برنامه نویسی به زبان های PHP,
-            CSS, Javascript, HTML, Python و C# مهارت دارم و تاکنون برنامه های کاربردی زیادی ساخته ام.</p>
-        <p dir="rtl" style="font-size: large;margin-top: 3px;text-align: justify;">من این وبسایت را برای معرفی برنامه
-            هایم طراحی کرده ام.</p>
-        <p dir="rtl" style="font-size: large;margin-top: 3px;text-align: justify;">لیست کامل برنامه ها در <a
-                href="/">خانه</a> مشاهده کنید.</p>
-    </div>
-    <div class="body"
-        style="margin-top: 5px !important;text-align: center;padding: 10px;position: absolute;bottom: 25px;width: Calc(100% - 87.5px);">
-        طراحی شده برپایه flask</div>
+    <iframe frameborder="0" scrolling="no" class="body" style="border:none;width:Calc(100% - 102px);" id="apps_frame"
+            src="/static/apps.html"></iframe>
+        <script>
+            function autoResize(id) {
+                var newheight;
+                if (document.getElementById) { newheight = document.getElementById(id).contentWindow.document.body.scrollHeight; }
+                document.getElementById(id).height = (newheight) + "px";
+            }
+            var apps_frame = document.getElementById("apps_frame");
+            apps_frame.onload = document.body.onresize = function () {
+                console.log("resizeing");
+                setTimeout(function () {
+                    apps_frame.height = "150px";
+                    autoResize("apps_frame");
+                }, 100);
+            }
+            window.onload = function(){
+                apps_frame.height = "150px";
+                autoResize("apps_frame");
+            }
+        </script>
 </body>
-
 </html>
