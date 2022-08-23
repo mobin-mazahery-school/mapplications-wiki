@@ -48,12 +48,12 @@
             carousel_frame.onload = document.body.onresize = function () {
                 console.log("resizeing");
                 setTimeout(function () {
-                    carousel_frame.height = "150px";
+                    carousel_frame.height = "0px";
                     autoResize("carousel_frame");
                 }, 100);
             }
             window.onload = function(){
-                carousel_frame.height = "150px";
+                carousel_frame.height = "0px";
                 autoResize("carousel_frame");
             }
         </script>
