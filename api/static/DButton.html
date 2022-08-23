@@ -9,8 +9,8 @@
     function autoResize(id) {
         var newheight = document.querySelector("body > a").offsetHeight;
         var newwidth = document.querySelector("body > a").offsetWidth;
-        top.document.getElementById(id).height = (newheight) + "px";
-        top.document.getElementById(id).width = (newwidth) + "px";
+        top.document.getElementById(id).height = (newheight+1) + "px";
+        top.document.getElementById(id).width = (newwidth+1) + "px";
     }
     var frame = top.document.getElementById("download_frame");
     const SizeChanged = function () {
