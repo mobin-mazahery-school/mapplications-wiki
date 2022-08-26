@@ -1,5 +1,6 @@
 {
     "rewrites": [
-        { "source": "/(.*)", "destination": "/api/index" }
+        { "source": "/en/(.*)", "destination": "/api/en-us/index" },
+        { "source": "/(.*)", "destination": "/api/fa-ir/index" }
     ]
 }
