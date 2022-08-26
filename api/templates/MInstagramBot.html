@@ -1,0 +1,53 @@
+<html>
+
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <title>M-Applications</title>
+    <link rel="stylesheet" href="static/default.css" />
+</head>
+
+<body>
+    {% include 'header.html' %}
+    <div class="body">
+        <center>
+            <h1>ذخیره کننده پست های اینستاگرامی</h1>
+        </center>
+        <p dir="rtl" style="font-size: large;text-align: justify;">شاید برای شما هم پیش آمده باشد که بعد از مشاهده یک
+            پست اینستاگرامی، از آن خوشتان آمده اشد و دوست داشته باشید تا به فایل اصلی آن دسترسی پیدا کنید.</p>
+        <p dir="rtl" style="font-size: large;margin-top: 3px;text-align: justify;">ممکن است برنامه های مختلفی را امتحان
+            کرده باشید و نتیجه خوبی نگرفته باشید یا اینکه دستگاه شما دچار ویروس شده باشد. چاره کار شما اینجاست.</p>
+        <p dir="rtl" style="font-size: large;margin-top: 3px;text-align: justify;">این برنامه در عین سادگی، از پس این
+            کار به راحتی بر می آید و حتی قابلیت های دیگری نیز بجز ذخیره نسخه اصلی پست ها انجام می دهد.</p>
+        <p dir="rtl" style="font-size: large;margin-top: 3px;font-weight: 700;text-align: justify;margin-bottom: 1px;">
+            قابلیت های برنامه:</p>
+        <li>تبدیل پست های اینستاگرامی به لینک های قابل دانلود.</li>
+        <li>دسته بندی پست ها بر اساس هشتگ های هر پست و نوع پست(عکس/فیلم)</li>
+        <li>ذخیره پست های ویدیویی چند قسمتی به صورت یک فایل</li>
+        <li>مناسب برای اینترنت های کم سرعت</li>
+        <iframe frameborder="0" scrolling="no" style="border:none;margin-top:25px" id="download_frame"
+            src="/static/DButton.html?name=MInstagramBot"></iframe>
+        <iframe frameborder="0" scrolling="no" style="border:none;width:100%;margin-top:25px" id="carousel_frame"
+            src="/static/carousel.html"></iframe>
+        <script>
+            function autoResize(id) {
+                var newheight;
+                if (document.getElementById) { newheight = document.getElementById(id).contentWindow.document.body.scrollHeight; }
+                document.getElementById(id).height = (newheight) + "px";
+            }
+            var carousel_frame = document.getElementById("carousel_frame");
+            carousel_frame.onload = document.body.onresize = function () {
+                console.log("resizeing");
+                setTimeout(function () {
+                    carousel_frame.height = "0px";
+                    autoResize("carousel_frame");
+                }, 100);
+            }
+            window.onload = function(){
+                carousel_frame.height = "0px";
+                autoResize("carousel_frame");
+            }
+        </script>
+    </div>
+</body>
+
+</html>

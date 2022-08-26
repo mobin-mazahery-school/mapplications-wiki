@@ -1,0 +1,120 @@
+#login-form-wrap h2 {
+    margin-top: 15px;
+    font-weight: 300;
+    text-align: center;
+    color: black;
+}
+
+#login-form-wrap p {
+    position: relative;
+}
+
+#login-form-wrap a,
+#login-form-wrap a:link,
+#login-form-wrap a:visited,
+#login-form-wrap a:active {
+    color: #3ca9e2;
+    -webkit-transition: all 0.2s ease;
+    transition: all 0.2s ease;
+}
+
+#login-form-wrap a:focus,
+#login-form-wrap a:hover,
+#login-form-wrap a:link:focus,
+#login-form-wrap a:link:hover,
+#login-form-wrap a:visited:focus,
+#login-form-wrap a:visited:hover,
+#login-form-wrap a:active:focus,
+#login-form-wrap a:active:hover {
+    color: #329dd5;
+    -webkit-transition: all 0.2s ease;
+    transition: all 0.2s ease;
+}
+
+#login-form-wrap {
+    background-color: #fff;
+    width: 35%;
+    direction: rtl;
+    font-size: 1.6rem;
+    font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+    margin: 30px auto;
+    margin-top: 100px;
+    text-align: center;
+    padding: 20px 0 0 0;
+    border-radius: 4px;
+    box-shadow: 0px 30px 50px 0px rgba(0, 0, 0, 0.2);
+}
+
+#login-form-wrap #login-form {
+    padding: 0 60px;
+}
+
+#login-form-wrap input {
+    display: block;
+    box-sizing: border-box;
+    width: 100%;
+    outline: none;
+    height: 60px;
+    line-height: 60px;
+    border-radius: 4px;
+}
+
+#login-form-wrap input[type="text"],
+#login-form-wrap input[type="password"] {
+    width: 100%;
+    padding: 0 10px 0 0;
+    margin: 0;
+    color: black;
+    border: 1px solid #c2c0ca;
+    font-style: normal;
+    font-size: 16px;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+    position: relative;
+    display: inline-block;
+    background: none;
+}
+
+#login-form-wrap input[type="text"]:focus,
+#login-form-wrap input[type="email"]:focus {
+    border-color: #3ca9e2;
+}
+
+#login-form-wrap input[type="text"]:focus:invalid,
+#login-form-wrap input[type="email"]:focus:invalid {
+    color: #cc1e2b;
+    border-color: #cc1e2b;
+}
+
+#login-form-wrap input[type="submit"] {
+    border: none;
+    display: block;
+    background-color: #3ca9e2;
+    color: #fff;
+    font-weight: bold;
+    text-transform: uppercase;
+    cursor: pointer;
+    -webkit-transition: all 0.2s ease;
+    transition: all 0.2s ease;
+    font-size: 18px;
+    position: relative;
+    display: inline-block;
+    cursor: pointer;
+    text-align: center;
+}
+
+#login-form-wrap input[type="submit"]:hover {
+    background-color: #329dd5;
+    -webkit-transition: all 0.2s ease;
+    transition: all 0.2s ease;
+}
+
+#login-form-wrap #create-account-wrap {
+    background-color: #eeedf1;
+    color: #8a8b8e;
+    font-size: 14px;
+    width: 100%;
+    padding: 10px 0;
+    border-radius: 0 0 4px 4px;
+}

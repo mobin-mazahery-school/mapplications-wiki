@@ -1,0 +1,33 @@
+<html>
+
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <title>M-Applications</title>
+    <link rel="stylesheet" href="static/default.css" />
+</head>
+
+<body>
+    {% include 'header.html' %}
+    <iframe frameborder="0" scrolling="no" class="body" style="border:none;width:Calc(100% - 102px);" id="apps_frame"
+            src="/static/apps.html"></iframe>
+        <script>
+            function autoResize(id) {
+                var newheight;
+                if (document.getElementById) { newheight = document.getElementById(id).contentWindow.document.body.scrollHeight; }
+                document.getElementById(id).height = (newheight) + "px";
+            }
+            var apps_frame = document.getElementById("apps_frame");
+            apps_frame.onload = document.body.onresize = function () {
+                console.log("resizeing");
+                setTimeout(function () {
+                    apps_frame.height = "150px";
+                    autoResize("apps_frame");
+                }, 100);
+            }
+            window.onload = function(){
+                apps_frame.height = "150px";
+                autoResize("apps_frame");
+            }
+        </script>
+</body>
+</html>

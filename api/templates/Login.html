@@ -1,26 +1,37 @@
 <!DOCTYPE html>
 <html lang="en">
-    <head>
-        <meta http-equiv="Content-Type" content="text/html; charset=windows-1252">
-        <title>M-Applications</title>
-        <link rel="stylesheet" href="{{ url_for('static', filename='default.css') }}" />
-    </head>
-    <body>
-        {% include 'header.html' %}
-        <div class="body">
-            <center style="margin-top: -20px;">
-                <form action="/login" method="post">
-                    <h1>ورود</h1>
-                    <div class="line">
-                        <label>نام کاربری یا ایمیل</label><br/>
-                        <input class="input_box" name="useroremail"/>
-                    </div>
-                    <div class="line">
-                        <label>رمز عبور</label><br/>
-                        <input class="input_box" name="password"/>
-                    </div>
-                </form>
-            </center>
+
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <title>M-Applications</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='default.css') }}" />
+    <link rel="stylesheet" href="{{ url_for('static', filename='loginsignup.css') }}" />
+</head>
+
+<body>
+    {% include 'header.html' %}
+    <div id="login-form-wrap">
+        <h2>ورود</h2>
+        <form id="login-form" action="/login" method="POST">
+            <p style="color: white;background: red;padding: 5px;font-size: 0.75em;border-radius: 4px;border: 1px solid #C2C0CB;display:{% if error_msg %}block{% else %}none{% endif %};">{{ error_msg }}</p>
+            <p>
+                <input type="text" id="username" name="username" placeholder=" نام کاربری یا ایمیل" required="">
+            </p>
+            <p>
+                <input type="password" id="password" name="password" placeholder=" رمز عبور" required="">
+            </p>
+            <p>
+                <input type="submit" id="login" value="ورود">
+            </p>
+        </form>
+        <div id="create-account-wrap">
+            <p style="
+    font-family: system-ui;
+">عضو نیستید؟ <a href="/signup">همین حالا عضو شوید</a></p>
+            <p>
+            </p>
         </div>
-    </body>
+    </div>
+</body>
+
 </html>
