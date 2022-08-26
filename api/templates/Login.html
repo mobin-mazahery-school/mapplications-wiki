@@ -1,4 +1,5 @@
-<html>
+<!DOCTYPE html>
+<html lang="en">
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=windows-1252">
         <title>M-Applications</title>
@@ -8,13 +9,6 @@
         {% include 'header.html' %}
         <div class="body">
             <center style="margin-top: -20px;">
-                {%  if verified  %}
-                    <h1>ایمیل شما تایید شد.</h1>
-                    <p><a href="/login">وارد شوید</a></p>
-                {% else %}
-                    <h1>ایمیل شما تایید نشد!</h1>
-                    <p>لینک تایید قبلا استفاده شده است.</p>
-                {% endif %}
             </center>
         </div>
     </body>

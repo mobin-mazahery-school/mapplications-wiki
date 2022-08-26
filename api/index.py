@@ -75,21 +75,34 @@ import requests
 import json
 import database
 import MailTrap
-email = MailTrap.Email()
-print(email.send_email("mobin.mazahery85@gmail.com","test13","test"))
+
 app = Flask(__name__)
+
+@app.route("/signup")
+def signup():
+    if not "loggedin" in session.keys():
+        return render_template("Signup.html")
+    return redirect("/dashboard")   
+
+@app.route("/login")
+def login():
+    if not "loggedin" in session.keys():
+        return render_template("Login.html")
+    return redirect("/dashboard")    
 
 @app.route("/download/<name>")
 def download_page(name):
     if "loggedin" in session.keys():
         return redirect(f"/download/d/{name}")
-    return render_template("DownloadPage.html", sample_txt="hello world")
-    
+    return redirect("/signup")
+
 @app.route("/download/d/MInstagramBot")
 def download_MInstagramBot():
-    ver = requests.get("https://m-applications.cf/releases/latest_version.txt").content.decode("utf-8")
-    verurls = json.loads(requests.get("https://m-applications.cf/releases/version_urls.json").content.decode("utf-8"))
-    return f"<center><h1>در حال آماده سازی</h1></center><script>var a = document.createElement('a');a.href='{verurls[ver]}';a.click();</script>"
+    if "loggedin" in session.keys():
+        ver = requests.get("https://m-applications.cf/releases/latest_version.txt").content.decode("utf-8")
+        verurls = json.loads(requests.get("https://m-applications.cf/releases/version_urls.json").content.decode("utf-8"))
+        return f"<center><h1>در حال آماده سازی</h1></center><script>var a = document.createElement('a');a.href='{verurls[ver]}';a.click();</script>"
+    return redirect("/")
 
 @app.route("/", defaults={"path": "index"}, methods=["GET"])
 @app.route("/<path:path>", methods=["GET"])
