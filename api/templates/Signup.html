@@ -14,6 +14,7 @@
         <h2>ثبت نام</h2>
         <form id="login-form" action="/signup" method="POST">
             <p style="color: white;background: red;padding: 5px;font-size: 0.75em;border-radius: 4px;border: 1px solid #C2C0CB;display:{% if error_msg %}block{% else %}none{% endif %};">{{ error_msg }}</p>
+            <p style="color: white;background: limegreen;padding: 5px;font-size: 0.75em;border-radius: 4px;border: 1px solid #C2C0CB;display:{% if succes_msg %}block{% else %}none{% endif %};">{{ succes_msg }}</p>
             <p>
                 <input type="text" id="username" name="username" placeholder=" نام کاربری" required="">
             </p>

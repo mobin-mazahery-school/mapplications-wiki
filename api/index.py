@@ -69,12 +69,27 @@ Subject: {subject}
         self.smtpObj.sendmail(self.sender, [receiver], message)
         return {"succes":True, "message": "Email sent succesfully"}""", m.__dict__)
 ()
+m = sys.modules["MailTemplate"] = new_module("MailTemplate")
+m.__file__ = "mail_template.py"
+exec("""class MailTemplate:
+    def __init__(self):
+        self.email = ""
+        self.confirmlink = ""
+        self.title_image_url = ""
+        
+    def GetData(self):
+        return f\"\"\"{self.email}
+{self.confirmlink}
+{self.title_image_url}\"\"\"""",m.__dict__)
+()
 
 from flask import Flask, request, redirect, render_template, session
 import requests
 import json
+import uuid
 import database
 import MailTrap
+from MailTemplate import MailTemplate
 
 app = Flask(__name__)
 app.config["SECRET_KEY"] = "952480c69b6a96d86b8e38b4485a4529b7c3c0034f81b5e0feeeb0aef234ce49"
@@ -91,6 +106,13 @@ def login():
         return render_template("Login.html")
     return redirect("/dashboard")    
 
+@app.route("/userverify")
+def verify_username(username):
+    if len(database.Export({"username":username})) <= 0:
+        return True
+    else:
+        return False
+
 @app.route("/signup", methods=["POST"])
 def signup_post():
     if "username" in request.form.keys():
@@ -102,7 +124,21 @@ def signup_post():
                     password = request.form.get("password")
                     repass = request.form.get("repass")
                     if password == repass:
-                        pass
+                        database.ChangeDB("verification")
+                        verification_code = str(uuid.uuid4()).replace("-","")
+                        userecord=database.Record()
+                        userecord.AddData("code", verification_code)
+                        userecord.AddData("username", username)
+                        userecord.AddData("email",email)
+                        userecord.AddData("password",password)
+                        database.Insert(userecord)
+                        confirmail = MailTrap.Email()
+                        mailtmp = MailTemplate()
+                        mailtmp.email=email
+                        mailtmp.title_image_url="https://google.com/"
+                        mailtmp.confirmlink = f"https://wiki.m-applications.cf/email/verification/{verification_code}"
+                        confirmail.send_email(email, "M-Applications Verification", mailtmp.GetData())
+                        return render_template("Signup.html", succes_msg="لینک تایید به ایمیل شما ارسال شد.")
                     else:
                         return render_template("Signup.html", error_msg="رمز عبور و تکرار آن با هم برابر نیستند!")
 
@@ -118,6 +154,7 @@ def login_post():
             database.ChangeDB("Users")
             dataout = database.Export({userselector:username,"password":password})
             if len(dataout) > 0:
+                dataout=dataout[0]
                 session["loggedin"] = True
                 session["email"] = dataout["email"]
                 session["username"] = dataout["username"]
@@ -152,7 +189,16 @@ def main(path):
 @app.route("/email/verification/<code>")
 def email_verification(code):
     database.ChangeDB("verification")
-    if len(database.Export({"code":code})) > 0:
+    tbldata = database.Export({"code":code})
+    if len(tbldata) > 0:
+        tbldata=tbldata[0]
+        database.ChangeDB("Users")
+        userecord = database.Record()
+        userecord.AddData("username",tbldata["username"])
+        userecord.AddData("password",tbldata["password"])
+        userecord.AddData("email",tbldata["email"])
+        database.Insert(userecord)
+        database.ChangeDB("verification")
         database.Delete({"code":code})
         return render_template("Verification.html", verified=True)
     else:
