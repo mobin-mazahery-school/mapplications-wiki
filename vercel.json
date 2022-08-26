@@ -1,9 +1,5 @@
 {
     "rewrites": [
-        { "source": "/en/(.*)", "destination": "/en-us/index" },
-        { "source": "/fa/(.*)", "destination": "/persian/index" }
-    ],
-    "redirects": [
-        { "source": "/", "destination": "/fa" }
+        { "source": "/(.*)", "destination": "/api/index" }
     ]
 }
