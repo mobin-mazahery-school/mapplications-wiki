@@ -9,6 +9,17 @@
         {% include 'header.html' %}
         <div class="body">
             <center style="margin-top: -20px;">
+                <form action="/login" method="post">
+                    <h1>ورود</h1>
+                    <div class="line">
+                        <label>نام کاربری یا ایمیل</label><br/>
+                        <input class="input_box" name="useroremail"/>
+                    </div>
+                    <div class="line">
+                        <label>رمز عبور</label><br/>
+                        <input class="input_box" name="password"/>
+                    </div>
+                </form>
             </center>
         </div>
     </body>
