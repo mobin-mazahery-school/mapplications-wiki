@@ -94,9 +94,17 @@ def login():
 @app.route("/signup", methods=["POST"])
 def signup_post():
     if "username" in request.form.keys():
-        if "password" in request.form.keys():
-            pass
-
+        if "email" in request.form.keys():
+            if "password" in request.form.keys():
+                if "repass" in request.form.keys():
+                    username = request.form.get("username")
+                    email = request.form.get("email")
+                    password = request.form.get("password")
+                    repass = request.form.get("repass")
+                    if password == repass:
+                        pass
+                    else:
+                        return render_template("Signup.html", error_msg="رمز عبور و تکرار آن با هم برابر نیستند!")
 
 @app.route("/login", methods=["POST"])
 def login_post():
@@ -122,7 +130,7 @@ def download_page(name):
     if "loggedin" in session.keys():
         if session["loggedin"]:
             return redirect(f"/download/d/{name}")
-    return redirect("/signup")
+    return redirect("/login")
 
 @app.route("/download/d/MInstagramBot")
 def download_MInstagramBot():

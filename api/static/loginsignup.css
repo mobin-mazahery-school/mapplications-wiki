@@ -60,7 +60,8 @@
 }
 
 #login-form-wrap input[type="text"],
-#login-form-wrap input[type="password"] {
+#login-form-wrap input[type="password"],
+#login-form-wrap input[type="email"] {
     width: 100%;
     padding: 0 10px 0 0;
     margin: 0;
