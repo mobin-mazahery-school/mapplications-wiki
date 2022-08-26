@@ -95,6 +95,7 @@ def login():
 def signup_post():
     if "username" in request.form.keys():
         if "password" in request.form.keys():
+            pass
 
 
 @app.route("/login", methods=["POST"])
