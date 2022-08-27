@@ -151,7 +151,7 @@ def signup_post():
                         return render_template("Signup.html", error_msg="رمز عبور و تکرار آن با هم برابر نیستند!")
 
 @app.route("/login", methods=["POST"])
-def login_post(wtg):
+def login_post(wtg=""):
     if "username" in request.form.keys():
         if "password" in request.form.keys():
             username = request.form.get("username")
