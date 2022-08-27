@@ -151,7 +151,7 @@ def signup_post():
                         return render_template("Signup.html", error_msg="رمز عبور و تکرار آن با هم برابر نیستند!")
 
 @app.route("/login", methods=["POST"])
-def login_post():
+def login_post(wtg):
     if "username" in request.form.keys():
         if "password" in request.form.keys():
             username = request.form.get("username")
@@ -168,7 +168,10 @@ def login_post():
                 session["loggedin"] = True
                 session["email"] = dataout["email"]
                 session["username"] = dataout["username"]
-                return redirect("/dashboard")
+                if not wtg:
+                    return redirect("/dashboard")
+                else:
+                    return redirect(f"/{wtg}")
             else:
                 return render_template("Login.html", error_msg="نام کاربری یا رمز عبور نامعتبر است!")
 
@@ -177,7 +180,7 @@ def download_page(name):
     if "loggedin" in session.keys():
         if session["loggedin"]:
             return redirect(f"/download/d/{name}")
-    return redirect("/login")
+    return redirect(f"/login?wtg=download/{name}")
 
 @app.route("/download/d/MInstagramBot")
 def download_MInstagramBot():

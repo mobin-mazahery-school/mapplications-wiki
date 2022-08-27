@@ -5,7 +5,11 @@
             style="user-select:none;width: 20px;height: 20px;"><span
             style="user-select:none;margin-left: 5px;position: relative;top: -1px;">M-Applications</span></div>
     <div class="top_menu">
-        <a class="top_menu_a" href="{% if loggedin %}/dashboard{% else %}/login{% endif %}">{% if loggedin %}{{ session['username'] }}{% else %}ورود/ثبت نام{% endif %}</a><span style="cursor:context-menu;">|</span><a class="top_menu_a" href="/">خانه</a><span style="cursor:context-menu;">|</span><a class="top_menu_a"
+        {% if loggedin %}
+            <a class="top_menu_a" href="/dashboard">{{ session['username'] }}</a>
+        {% else %}
+            <a class="top_menu_a" href="/login">ورود/ثبت نام</a>
+        {% endif %}<span style="cursor:context-menu;">|</span><a class="top_menu_a" href="/">خانه</a><span style="cursor:context-menu;">|</span><a class="top_menu_a"
             href="/about">درباره</a>
     </div>
 </header>

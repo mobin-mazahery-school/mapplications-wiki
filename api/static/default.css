@@ -5,6 +5,7 @@ body {
     background-size: cover;
 }
 .top_menu_a{
+    font-size: 1.5rem;
     background: transparent;
     transition: .3s;
     padding: 20px;
@@ -16,7 +17,11 @@ body {
 .top_menu_a:hover{
     background: rgba(0,0,0,0.25);
 }
+.top_menu span{
+    font-size: 1.5rem;
+}
 .top_menu{
+    font-size: 0px;
     direction: rtl;
     display: inline-block;
     user-select:none;
