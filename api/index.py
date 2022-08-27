@@ -84,7 +84,6 @@ exec("""class MailTemplate:
 ()
 
 from flask import Flask, request, redirect, render_template, session
-from flask_session import Session
 import requests
 import json
 import uuid
@@ -94,11 +93,8 @@ import MailTrap
 from MailTemplate import MailTemplate
 
 app = Flask(__name__)
-# app.config["SECRET_KEY"] = "952480c69b6a96d86b8e38b4485a4529b7c3c0034f81b5e0feeeb0aef234ce49"
-app.config["SESSION_PERMANENT"] = False
-app.config["SESSION_TYPE"] = "filesystem"
-Session(app)
-
+app.config['SESSION_PERMANENT'] = False
+app.config["SECRET_KEY"] = "952480c69b6a96d86b8e38b4485a4529b7c3c0034f81b5e0feeeb0aef234ce49"
 @app.route("/signup")
 def signup():
     if not "loggedin" in session.keys() or not session["loggedin"]:
@@ -195,8 +191,6 @@ def download_MInstagramBot():
 @app.route("/", defaults={"path": "index"}, methods=["GET"])
 @app.route("/<path:path>", methods=["GET"])
 def main(path):
-    session["loggedin"] = False
-    session["username"] = ""
     return render_template(f"{path}.html", loggedin=(session["loggedin"] if ("loggedin" in session.keys()) else False))
 
 #=================================================[EmailVerification]=================================================
