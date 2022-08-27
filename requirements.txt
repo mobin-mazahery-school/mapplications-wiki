@@ -2,3 +2,5 @@ Flask
 requests
 pymongo
 pymongo[srv]
+hashlib
+Flask-Session

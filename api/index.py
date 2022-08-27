@@ -84,15 +84,20 @@ exec("""class MailTemplate:
 ()
 
 from flask import Flask, request, redirect, render_template, session
+from flask_session import Session
 import requests
 import json
 import uuid
+import hashlib
 import database
 import MailTrap
 from MailTemplate import MailTemplate
 
 app = Flask(__name__)
-app.config["SECRET_KEY"] = "952480c69b6a96d86b8e38b4485a4529b7c3c0034f81b5e0feeeb0aef234ce49"
+# app.config["SECRET_KEY"] = "952480c69b6a96d86b8e38b4485a4529b7c3c0034f81b5e0feeeb0aef234ce49"
+app.config["SESSION_PERMANENT"] = False
+app.config["SESSION_TYPE"] = "filesystem"
+Session(app)
 
 @app.route("/signup")
 def signup():
@@ -100,11 +105,16 @@ def signup():
         return render_template("Signup.html")
     return redirect("/dashboard")   
 
+@app.route("/logout")
+def logout():
+    session.clear()
+    return redirect("/login")
+
 @app.route("/login")
 def login():
     if not "loggedin" in session.keys() or not session["loggedin"]:
         return render_template("Login.html")
-    return redirect("/dashboard")    
+    return redirect("/dashboard")
 
 @app.route("/userverify")
 def verify_username(username):
@@ -124,6 +134,8 @@ def signup_post():
                     password = request.form.get("password")
                     repass = request.form.get("repass")
                     if password == repass:
+                        hash_object = hashlib.sha256(bytes(password,"utf-8"))
+                        password = hash_object.hexdigest()
                         database.ChangeDB("verification")
                         verification_code = str(uuid.uuid4()).replace("-","")
                         userecord=database.Record()
@@ -148,6 +160,8 @@ def login_post():
         if "password" in request.form.keys():
             username = request.form.get("username")
             password = request.form.get("password")
+            hash_object = hashlib.sha256(bytes(password,"utf-8"))
+            password = hash_object.hexdigest()
             userselector = "username"
             if "@" in username:
                 userselector = "email"
