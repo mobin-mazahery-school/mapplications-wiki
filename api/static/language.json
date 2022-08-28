@@ -1,0 +1,8 @@
+{
+    "fa":{
+        "verification_sent_success":"لینک تایید به ایمیل شما ارسال شد.",
+        "dlpage_MInstagramBot":"در حال آماده سازی",
+        "verification_sent_failed":"رمز عبور و تکرار آن با هم برابر نیستند!",
+        "invalid_userdata":"نام کاربری یا رمز عبور نامعتبر است!"
+    }
+}

@@ -111,13 +111,16 @@ import requests
 import json
 import uuid
 import hashlib
+import json
 import database
 import MailTrap
 from MailTemplate import MailTemplate
-
+print(requests.get("https://wiki.m-applications.cf/static/language.json").content.decode("utf-8").replace("    ","").replace("\n",""))
+language = json.loads()
 app = Flask(__name__)
 app.config['SESSION_PERMANENT'] = False
 app.config["SECRET_KEY"] = "952480c69b6a96d86b8e38b4485a4529b7c3c0034f81b5e0feeeb0aef234ce49"
+
 @app.route("/signup")
 def signup():
     if not "loggedin" in session.keys() or not session["loggedin"]:
@@ -170,10 +173,10 @@ def signup_post():
                         mailtmp.title_image_url="https://wiki.m-applications.cf/static/Logo.png"
                         mailtmp.confirmlink = f"https://wiki.m-applications.cf/email/verification/{verification_code}"
                         confirmail.send_email(email, "M-Applications Verification", "", mailtmp.GetData(), mailtmp.title_image_url)
-                        print(f"New verification email sent: ")
-                        return render_template("Signup.html", succes_msg="لینک تایید به ایمیل شما ارسال شد.")
+                        print(f"New verification email sent to {mailtmp.email}")
+                        return render_template("Signup.html", succes_msg=language[session['language']]['verification_sent_success'])
                     else:
-                        return render_template("Signup.html", error_msg="رمز عبور و تکرار آن با هم برابر نیستند!")
+                        return render_template("Signup.html", error_msg=language[session['language']]['verification_sent_failed'])
 
 @app.route("/login", methods=["POST"])
 def login_post(wtg=""):
@@ -198,7 +201,7 @@ def login_post(wtg=""):
                 else:
                     return redirect(f"/{wtg}")
             else:
-                return render_template("Login.html", error_msg="نام کاربری یا رمز عبور نامعتبر است!")
+                return render_template("Login.html", error_msg=language[session['language']]['invalid_userdata'])
 
 @app.route("/download/<name>")
 def download_page(name):
@@ -213,13 +216,18 @@ def download_MInstagramBot():
         if session["loggedin"]:
             ver = requests.get("https://m-applications.cf/releases/latest_version.txt").content.decode("utf-8")
             verurls = json.loads(requests.get("https://m-applications.cf/releases/version_urls.json").content.decode("utf-8"))
-            return f"<center><h1>در حال آماده سازی</h1></center><script>var a = document.createElement('a');a.href='{verurls[ver]}';a.click();</script>"
+            return "<center><h1>"+language[session['language']]['dlpage_MInstagramBot']+f"</h1></center><script>var a = document.createElement('a');a.href='{verurls[ver]}';a.click();</script>"
     return redirect("/")
+
+@app.route("/setlang/<language>", methods=["GET"])
+def change_lang(language, wtg):
+    session["language"] = language
+    return redirect(f"/{wtg}")
 
 @app.route("/", defaults={"path": "index"}, methods=["GET"])
 @app.route("/<path:path>", methods=["GET"])
 def main(path):
-    return render_template(f"{path}.html", loggedin=(session["loggedin"] if ("loggedin" in session.keys()) else False))
+    return render_template(language[session['language']]+f"/{path}.html", loggedin=(session["loggedin"] if ("loggedin" in session.keys()) else False))
 
 #=================================================[EmailVerification]=================================================
 @app.route("/email/verification/<code>")
