@@ -64,9 +64,9 @@ class Email:
         self.name = f"M-Applications {self.mailsender[0].upper()}{self.mailsender[1:]}"
         self.sender = f"{self.mailsender}@{self.domain}"
         
-    def attach_logo(email_message, fileaddress):
+    def attach_logo(self, email_message, fileaddress):
         extra_headers={'Content-ID':'<title_image>'}
-        file_attachment = MIMEApplication(requests.get(fileaddress))
+        file_attachment = MIMEApplication(requests.get(fileaddress).content)
         file_attachment.add_header(
             "Content-Disposition",
             f"attachment; filename= Logo.png",
@@ -166,6 +166,7 @@ def signup_post():
                         confirmail = MailTrap.Email()
                         mailtmp = MailTemplate()
                         mailtmp.email=email
+                        mailtmp.username = username
                         mailtmp.title_image_url="https://wiki.m-applications.cf/static/Logo.png"
                         mailtmp.confirmlink = f"https://wiki.m-applications.cf/email/verification/{verification_code}"
                         confirmail.send_email(email, "M-Applications Verification", "", mailtmp.GetData(), mailtmp.title_image_url)
