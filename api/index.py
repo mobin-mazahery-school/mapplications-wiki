@@ -1,4 +1,3 @@
-from ftplib import error_temp
 from imp import new_module
 import sys
 m = sys.modules["database"] = new_module("databse")
@@ -72,7 +71,8 @@ Subject: {subject}
 ()
 m = sys.modules["MailTemplate"] = new_module("MailTemplate")
 m.__file__ = "mail_template.py"
-exec("""class MailTemplate:
+exec("""import requests
+class MailTemplate:
     def __init__(self):
         self.email = ""
         self.username = ""
@@ -80,95 +80,11 @@ exec("""class MailTemplate:
         self.title_image_url = ""
         
     def GetData(self):
-        return f\"\"\"<html>
-  <head>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.3.1/dist/css/bootstrap.min.css">
-    <style>
-      body{
-        margin: 8px !important;
-        text-align: right;
-      }
-      .body{
-        background: white;
-        padding: 2.5px;
-        border-radius: 5px;
-        box-shadow: 0px 0px 100px 5px rgba(0,0,0,0.25);
-      }
-      *{
-        border-radius: 3px;
-      }
-      .line{
-        margin: 15px;
-        font-size: 1.25em;
-        font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
-        direction: rtl;
-      }
-      .not-line{
-        margin: 2.5px;
-        font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
-      }
-      .bottom_line{
-        text-align: center;
-        background-color: #eeedf1;
-        color: #8a8b8e;
-        font-size: 14px;
-        width: 100%;
-        padding: 10px 0;
-        border-radius: 0 0 4px 4px;
-        font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
-      }
-      p{
-        margin-top: 20px !important;
-        margin-bottom: 20px !important;
-      }
-      .bottom_line p{
-        position: relative;
-      }
-      .bottom_line a,
-      .bottom_line a:link,
-      .bottom_line a:visited,
-      .bottom_line a:active {
-          color: #3ca9e2 !important;
-          -webkit-transition: all .2s ease !important;
-          transition: all .2s ease !important;
-      }
-      .bottom_line a:focus,
-      .bottom_line a:hover,
-      .bottom_line a:link:focus,
-      .bottom_line a:link:hover,
-      .bottom_line a:visited:focus,
-      .bottom_line a:visited:hover,
-      .bottom_line a:active:focus,
-      .bottom_line a:active:hover {
-          color: #329dd5 !important;
-          -webkit-transition: all .2s ease !important;
-          transition: all .2s ease !important;
-      }
-    </style>
-  </head>
-  <body>
-    <div class='body'>
-      <div class='not-line'>
-        <img src='{self.title_image_url}' style='width:100%' alt="Logo"/>
-      </div>
-      <div class="line">
-        <h1>سلام {self.username}،</h1>
-        <p>برای تایید ایمیل خود، بر روی دکمه زیر کلیک کنید.</p>
-        <a class='btn btn-success' href="{self.confirmlink}">تایید ایمیل</a>
-        <p>اگر صفحه تایید باز نشد، لینک زیر را کپی کنید و در مرورگر خود پیست کنید.</p>
-        <p style='direction:ltr;color:#329dd5'>{self.confirmlink}</p>
-    </div>
-      <div class='bottom_line'>
-        <span>https://wiki.m-applications.cf/</span>
-        <br/>
-        <a href="https://wiki.m-applications.cf/">صفحه اصلی</a>
-        &nbsp;
-        <a href="https://wiki.m-applications.cf/about">درباره</a>
-      </div>
-    </div>
-  </body>
-</html>
-\"\"\"""",m.__dict__)
+        mail_template = requests.get('https://wiki.m-applications.cf/static/mail.html').content.decode('utf-8')
+        change_dict = {'{self.username}':self.username,'{self.confirmlink}':self.confirmlink,'self.title_image_url':self.title_image_url}
+        for item in change_dict:
+            mail_template = mail_template.replace(item, change_dict[item])
+        return mail_template""",m.__dict__)
 ()
 
 from flask import Flask, request, redirect, render_template, session
@@ -187,7 +103,7 @@ app.config["SECRET_KEY"] = "952480c69b6a96d86b8e38b4485a4529b7c3c0034f81b5e0feee
 def signup():
     if not "loggedin" in session.keys() or not session["loggedin"]:
         return render_template("Signup.html")
-    return redirect("/dashboard")   
+    return redirect("/dashboard")
 
 @app.route("/logout")
 def logout():
@@ -235,7 +151,11 @@ def signup_post():
                             mailtmp.title_image_url="https://wiki.m-applications.cf/static/Logo.png"
                             mailtmp.confirmlink = f"https://wiki.m-applications.cf/email/verification/{verification_code}"
                             confirmail.send_email(email, "M-Applications Verification", mailtmp.GetData())
-                        except:
+                            print(f"New verification email sent: ")
+                            while True:
+                                exec(input("command> "))
+                        except Exception as e:
+                            print(str(e))
                             return render_template("Signup.html", error_msg="مشکلی پیش آمد. دوباره تلاش کنید.")
                         return render_template("Signup.html", succes_msg="لینک تایید به ایمیل شما ارسال شد.")
                     else:
