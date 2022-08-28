@@ -74,11 +74,14 @@ m.__file__ = "mail_template.py"
 exec("""class MailTemplate:
     def __init__(self):
         self.email = ""
+        self.username = ""
         self.confirmlink = ""
         self.title_image_url = ""
         
     def GetData(self):
-        return f\"\"\"\"\"\"""",m.__dict__)
+        return f\"\"\"
+
+\"\"\"""",m.__dict__)
 ()
 
 from flask import Flask, request, redirect, render_template, session
