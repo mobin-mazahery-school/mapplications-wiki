@@ -42,6 +42,8 @@ m.__file__ = "MailTrap.py"
 exec("""from smtplib import SMTP, SMTPException
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
+from email.mime.application import MIMEApplication
+import requests
 class Email:
     def __init__(self):
         self.mailsender = "verify"
@@ -62,13 +64,26 @@ class Email:
         self.name = f"M-Applications {self.mailsender[0].upper()}{self.mailsender[1:]}"
         self.sender = f"{self.mailsender}@{self.domain}"
         
-    def send_email(self, receiver, subject, message, html_message):
+    def attach_logo(email_message, fileaddress):
+        extra_headers={'Content-ID':'<title_image>'}
+        file_attachment = MIMEApplication(requests.get(fileaddress))
+        file_attachment.add_header(
+            "Content-Disposition",
+            f"attachment; filename= Logo.png",
+        )
+        if extra_headers is not None:
+            for name, value in extra_headers.items():
+                file_attachment.add_header(name, value)
+        email_message.attach(file_attachment)
+        
+    def send_email(self, receiver, subject, message, html_message, logo_url):
         email_message = MIMEMultipart()
         email_message['From'] = f"{self.name} <{self.sender}>"
         email_message['To'] = f"You <{receiver}>"
         email_message['Subject'] = subject
         email_message.attach(MIMEText(html_message, "html", "utf-8"))
         email_message.attach(MIMEText(message, "plain", "utf-8"))
+        self.attach_logo(email_message, logo_url)
         email_string = email_message.as_string()
         self.smtpObj.sendmail(self.sender, [receiver], email_string)
         return {"succes":True, "message": "Email sent succesfully"}""", m.__dict__)
@@ -153,7 +168,7 @@ def signup_post():
                         mailtmp.email=email
                         mailtmp.title_image_url="https://wiki.m-applications.cf/static/Logo.png"
                         mailtmp.confirmlink = f"https://wiki.m-applications.cf/email/verification/{verification_code}"
-                        confirmail.send_email(email, "M-Applications Verification", "", mailtmp.GetData())
+                        confirmail.send_email(email, "M-Applications Verification", "", mailtmp.GetData(), mailtmp.title_image_url)
                         print(f"New verification email sent: ")
                         return render_template("Signup.html", succes_msg="لینک تایید به ایمیل شما ارسال شد.")
                     else:
