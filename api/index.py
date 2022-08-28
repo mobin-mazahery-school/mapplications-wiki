@@ -78,9 +78,7 @@ exec("""class MailTemplate:
         self.title_image_url = ""
         
     def GetData(self):
-        return f\"\"\"{self.email}
-{self.confirmlink}
-{self.title_image_url}\"\"\"""",m.__dict__)
+        return f\"\"\"\"\"\"""",m.__dict__)
 ()
 
 from flask import Flask, request, redirect, render_template, session
