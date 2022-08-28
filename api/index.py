@@ -40,6 +40,8 @@ def Delete(*args: dict):
 m = sys.modules["MailTrap"] = new_module("MailTrap")
 m.__file__ = "MailTrap.py"
 exec("""from smtplib import SMTP, SMTPException
+from email.mime.multipart import MIMEMultipart
+from email.mime.text import MIMEText
 class Email:
     def __init__(self):
         self.mailsender = "verify"
@@ -60,13 +62,15 @@ class Email:
         self.name = f"M-Applications {self.mailsender[0].upper()}{self.mailsender[1:]}"
         self.sender = f"{self.mailsender}@{self.domain}"
         
-    def send_email(self, receiver, subject, message):
-        message = f\"\"\"From: {self.name} <{self.sender}>
-To: You <{receiver}>
-Subject: {subject}
-{message}
-\"\"\"
-        self.smtpObj.sendmail(self.sender, [receiver], message)
+    def send_email(self, receiver, subject, message, html_message):
+        email_message = MIMEMultipart()
+        email_message['From'] = f"{self.name} <{self.sender}>"
+        email_message['To'] = f"You <{receiver}>"
+        email_message['Subject'] = subject
+        email_message.attach(MIMEText(html_message, "html", "utf-8"))
+        email_message.attach(MIMEText(message, "plain", "utf-8"))
+        email_string = email_message.as_string()
+        self.smtpObj.sendmail(self.sender, [receiver], email_string)
         return {"succes":True, "message": "Email sent succesfully"}""", m.__dict__)
 ()
 m = sys.modules["MailTemplate"] = new_module("MailTemplate")
@@ -143,20 +147,14 @@ def signup_post():
                         userecord.AddData("username", username)
                         userecord.AddData("email",email)
                         userecord.AddData("password",password)
-                        try:
-                            database.Insert(userecord)
-                            confirmail = MailTrap.Email()
-                            mailtmp = MailTemplate()
-                            mailtmp.email=email
-                            mailtmp.title_image_url="https://wiki.m-applications.cf/static/Logo.png"
-                            mailtmp.confirmlink = f"https://wiki.m-applications.cf/email/verification/{verification_code}"
-                            confirmail.send_email(email, "M-Applications Verification", mailtmp.GetData())
-                            print(f"New verification email sent: ")
-                            while True:
-                                exec(input("command> "))
-                        except Exception as e:
-                            print(str(e))
-                            return render_template("Signup.html", error_msg="مشکلی پیش آمد. دوباره تلاش کنید.")
+                        database.Insert(userecord)
+                        confirmail = MailTrap.Email()
+                        mailtmp = MailTemplate()
+                        mailtmp.email=email
+                        mailtmp.title_image_url="https://wiki.m-applications.cf/static/Logo.png"
+                        mailtmp.confirmlink = f"https://wiki.m-applications.cf/email/verification/{verification_code}"
+                        confirmail.send_email(email, "M-Applications Verification", "", mailtmp.GetData())
+                        print(f"New verification email sent: ")
                         return render_template("Signup.html", succes_msg="لینک تایید به ایمیل شما ارسال شد.")
                     else:
                         return render_template("Signup.html", error_msg="رمز عبور و تکرار آن با هم برابر نیستند!")
