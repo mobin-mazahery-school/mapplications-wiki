@@ -63,3 +63,7 @@ body[lang="en"] .top_menu{
     left: 0px !important;
     right: initial !important;
 }
+
+.dropdown{
+    background: rgba(0,0,0,0.5);
+}

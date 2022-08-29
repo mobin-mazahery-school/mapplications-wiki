@@ -21,5 +21,12 @@
                     <a class="top_menu_a" href="/about">درباره</a>
             </div>
         </header>
+        <div class="body">
+            {% if lang == 'en' %}
+            <h1>Under development</h1>
+            {% elif lang == "fa" %}
+            <h1>در حال توسعه</h1>
+            {% endif %}
+        </div>
     </body>
 </html>
