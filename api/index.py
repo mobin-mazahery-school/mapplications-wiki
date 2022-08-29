@@ -229,6 +229,12 @@ def login_post():
                 print("Error: " + str(e))
                 return render_template(session.get('language')+"/Login.html", error_msg=language[session['language']]['problem_doing_sth'])
 
+@app.route("/dashboard")
+def dashboard():
+    if "loggedin" in session.keys():
+        if session["loggedin"]:
+            return render_template(session['language']+"dashboard.html", lang=session['language'])
+
 @app.route("/download/<name>")
 def download_page(name):
     if "loggedin" in session.keys():
