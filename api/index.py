@@ -201,7 +201,7 @@ def signup_post():
 
 @app.route("/login", methods=["POST"])
 def login_post():
-    wtg = dict(request.values)["wtg"]
+    wtg = dict(request.values)["wtg"] if "wtg" in dict(request.values) else ""
     if "username" in request.form.keys():
         if "password" in request.form.keys():
             username = request.form.get("username")
