@@ -233,7 +233,7 @@ def login_post():
 def dashboard():
     if "loggedin" in session.keys():
         if session["loggedin"]:
-            return render_template(session['language']+"dashboard.html", lang=session['language'])
+            return render_template(session['language']+"/dashboard.html", lang=session['language'])
 
 @app.route("/download/<name>")
 def download_page(name):
