@@ -4,16 +4,16 @@
         <title>M-Applications</title>
         <link rel="stylesheet" href="{{ url_for('static', filename='default.css') }}" />
     </head>
-    <body>
-        {% include 'fa/header.html' %}
+    <body lang="en">
+        {% include 'en/header.html' %}
         <div class="body">
             <center style="margin-top: -20px;">
                 {%  if verified  %}
-                    <h1>ایمیل شما تایید شد.</h1>
-                    <p><a href="/login">وارد شوید</a></p>
+                    <h1>Email is verified.</h1>
+                    <p><a href="/login">Login</a></p>
                 {% else %}
-                    <h1>ایمیل شما تایید نشد!</h1>
-                    <p>لینک تایید قبلا استفاده شده است.</p>
+                    <h1>Email wasn't verified.</h1>
+                    <p>Confirmation EMail is used or invalid</p>
                 {% endif %}
             </center>
         </div>

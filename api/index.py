@@ -115,8 +115,22 @@ import json
 import database
 import MailTrap
 from MailTemplate import MailTemplate
-print(requests.get("https://wiki.m-applications.cf/static/language.json").content.decode("utf-8").replace("    ","").replace("\n",""))
-language = json.loads()
+language = json.loads("""{
+    "fa":{
+        "verification_sent_success":"لینک تایید به ایمیل شما ارسال شد.",
+        "dlpage_MInstagramBot":"در حال آماده سازی",
+        "verification_sent_failed":"رمز عبور و تکرار آن با هم برابر نیستند!",
+        "invalid_userdata":"نام کاربری یا رمز عبور نامعتبر است!",
+        "problem_doing_sth":"مشکلی پیش آمد. دوباره امتحان کنید."
+    },
+    "en":{
+        "verification_sent_success":"Confirmation link has been sent to your EMail.",
+        "dlpage_MInstagramBot":"Initializing",
+        "verification_sent_failed":"Password and Retype of that don't match!",
+        "invalid_userdata":"Invalid Username or Password!",
+        "problem_doing_sth":"Error occurred. Try again."
+    }
+}""")
 app = Flask(__name__)
 app.config['SESSION_PERMANENT'] = False
 app.config["SECRET_KEY"] = "952480c69b6a96d86b8e38b4485a4529b7c3c0034f81b5e0feeeb0aef234ce49"
@@ -124,18 +138,20 @@ app.config["SECRET_KEY"] = "952480c69b6a96d86b8e38b4485a4529b7c3c0034f81b5e0feee
 @app.route("/signup")
 def signup():
     if not "loggedin" in session.keys() or not session["loggedin"]:
-        return render_template("Signup.html")
+        return render_template(session.get('language')+"/Signup.html")
     return redirect("/dashboard")
 
 @app.route("/logout")
 def logout():
+    lang = session.get("language")
     session.clear()
-    return redirect("/login")
+    session["language"] = lang
+    return redirect(session.get('language')+"/login")
 
 @app.route("/login")
 def login():
     if not "loggedin" in session.keys() or not session["loggedin"]:
-        return render_template("Login.html")
+        return render_template(session.get('language')+"/Login.html")
     return redirect("/dashboard")
 
 @app.route("/userverify")
@@ -165,18 +181,22 @@ def signup_post():
                         userecord.AddData("username", username)
                         userecord.AddData("email",email)
                         userecord.AddData("password",password)
-                        database.Insert(userecord)
-                        confirmail = MailTrap.Email()
-                        mailtmp = MailTemplate()
-                        mailtmp.email=email
-                        mailtmp.username = username
-                        mailtmp.title_image_url="https://wiki.m-applications.cf/static/Logo.png"
-                        mailtmp.confirmlink = f"https://wiki.m-applications.cf/email/verification/{verification_code}"
-                        confirmail.send_email(email, "M-Applications Verification", "", mailtmp.GetData(), mailtmp.title_image_url)
-                        print(f"New verification email sent to {mailtmp.email}")
-                        return render_template("Signup.html", succes_msg=language[session['language']]['verification_sent_success'])
+                        try:
+                            database.Insert(userecord)
+                            confirmail = MailTrap.Email()
+                            mailtmp = MailTemplate()
+                            mailtmp.email=email
+                            mailtmp.username = username
+                            mailtmp.title_image_url="https://wiki.m-applications.cf/static/Logo.png"
+                            mailtmp.confirmlink = f"https://wiki.m-applications.cf/email/verification/{verification_code}"
+                            confirmail.send_email(email, "M-Applications Verification", "", mailtmp.GetData(), mailtmp.title_image_url)
+                            print(f"New verification email sent to {mailtmp.email}")
+                            return render_template(session.get('language')+"/Signup.html", succes_msg=language[session['language']]['verification_sent_success'])
+                        except Exception as e:
+                            print("Error: " + str(e))
+                            return render_template(session.get('language')+"/Signup.html", error_msg=language[session['language']]['problem_doing_sth'])
                     else:
-                        return render_template("Signup.html", error_msg=language[session['language']]['verification_sent_failed'])
+                        return render_template(session.get('language')+"/Signup.html", error_msg=language[session['language']]['verification_sent_failed'])
 
 @app.route("/login", methods=["POST"])
 def login_post(wtg=""):
@@ -190,18 +210,22 @@ def login_post(wtg=""):
             if "@" in username:
                 userselector = "email"
             database.ChangeDB("Users")
-            dataout = database.Export({userselector:username,"password":password})
-            if len(dataout) > 0:
-                dataout=dataout[0]
-                session["loggedin"] = True
-                session["email"] = dataout["email"]
-                session["username"] = dataout["username"]
-                if not wtg:
-                    return redirect("/dashboard")
+            try:
+                dataout = database.Export({userselector:username,"password":password})
+                if len(dataout) > 0:
+                    dataout=dataout[0]
+                    session["loggedin"] = True
+                    session["email"] = dataout["email"]
+                    session["username"] = dataout["username"]
+                    if not wtg:
+                        return redirect("/dashboard")
+                    else:
+                        return redirect(f"/{wtg}")
                 else:
-                    return redirect(f"/{wtg}")
-            else:
-                return render_template("Login.html", error_msg=language[session['language']]['invalid_userdata'])
+                    return render_template(session.get('language')+"/Login.html", error_msg=language[session['language']]['invalid_userdata'])
+            except Exception as e:
+                print("Error: " + str(e))
+                return render_template(session.get('language')+"/Login.html", error_msg=language[session['language']]['problem_doing_sth'])
 
 @app.route("/download/<name>")
 def download_page(name):
@@ -219,15 +243,17 @@ def download_MInstagramBot():
             return "<center><h1>"+language[session['language']]['dlpage_MInstagramBot']+f"</h1></center><script>var a = document.createElement('a');a.href='{verurls[ver]}';a.click();</script>"
     return redirect("/")
 
-@app.route("/setlang/<language>", methods=["GET"])
-def change_lang(language, wtg):
+@app.route("/setlang/<language>?wtg=<wtg>", methods=["GET"])
+def change_lang(language, wtg=""):
     session["language"] = language
     return redirect(f"/{wtg}")
 
 @app.route("/", defaults={"path": "index"}, methods=["GET"])
 @app.route("/<path:path>", methods=["GET"])
 def main(path):
-    return render_template(language[session['language']]+f"/{path}.html", loggedin=(session["loggedin"] if ("loggedin" in session.keys()) else False))
+    if not "language" in session.keys():
+        session["language"] = "fa"
+    return render_template(session['language']+f"/{path}.html", loggedin=(session["loggedin"] if ("loggedin" in session.keys()) else False))
 
 #=================================================[EmailVerification]=================================================
 @app.route("/email/verification/<code>")
@@ -244,9 +270,9 @@ def email_verification(code):
         database.Insert(userecord)
         database.ChangeDB("verification")
         database.Delete({"code":code})
-        return render_template("Verification.html", verified=True)
+        return render_template(session.get('language')+"/Verification.html", verified=True)
     else:
-        return render_template("Verification.html", verified=False)
+        return render_template(session.get('language')+"/Verification.html", verified=False)
     
 #=================================================[EmailVerification]=================================================
 if __name__ == "__main__":

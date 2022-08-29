@@ -45,3 +45,21 @@ body {
     text-decoration: none;
     color: royalblue;
 }
+
+body[lang="en"] *{
+    direction: ltr !important;
+}
+
+body[lang="en"] header{
+    direction: rtl !important;
+}
+
+body[lang="en"] header *{
+    direction: rtl !important;
+}
+
+body[lang="en"] .top_menu{
+    direction: ltr !important;
+    left: 0px !important;
+    right: initial !important;
+}
