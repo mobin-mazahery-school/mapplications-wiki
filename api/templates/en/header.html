@@ -9,7 +9,20 @@
             <a class="top_menu_a" href="/dashboard">{{ session['username'] }}</a>
         {% else %}
             <a class="top_menu_a" href="/login">Login/Signup</a>
-        {% endif %}<span style="cursor:context-menu;">|</span><a class="top_menu_a" href="/">Home</a><span style="cursor:context-menu;">|</span><a class="top_menu_a"
-            href="/about">About</a>
+        {% endif %}
+        <span style="cursor:context-menu;">|</span>
+        <a class="top_menu_a" href="/">Home</a>
+        <span style="cursor:context-menu;">|</span>
+        <a class="top_menu_a" href="/about">About</a>
+        <span style="cursor:context-menu;">|</span>
+        <select onchange="ChangeLang(this.value)" class="top_menu_a" default="en" style="display: inline-block;border: none;margin-top: -20px;direction: ltr !important;">
+            <option value="en" selected>English</option>
+            <option value="fa">فارسی</option>
+        </select>
+        <script>
+            function ChangeLang(value){
+                document.location.href = `${document.location.protocol}//${document.location.host}/setlang?language=${value}&wtg=${document.location.pathname.substring(1)}`
+            }
+        </script>
     </div>
 </header>

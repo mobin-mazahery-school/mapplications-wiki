@@ -155,11 +155,12 @@ def login():
     return redirect("/dashboard")
 
 @app.route("/userverify")
-def verify_username(username):
+def verify_username():
+    username = dict(request.values)["username"]
     if len(database.Export({"username":username})) <= 0:
-        return True
+        return 'True'
     else:
-        return False
+        return 'False'
 
 @app.route("/signup", methods=["POST"])
 def signup_post():
@@ -199,7 +200,8 @@ def signup_post():
                         return render_template(session.get('language')+"/Signup.html", error_msg=language[session['language']]['verification_sent_failed'])
 
 @app.route("/login", methods=["POST"])
-def login_post(wtg=""):
+def login_post():
+    wtg = dict(request.values)["wtg"]
     if "username" in request.form.keys():
         if "password" in request.form.keys():
             username = request.form.get("username")
