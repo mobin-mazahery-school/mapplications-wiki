@@ -146,7 +146,7 @@ def logout():
     lang = session.get("language")
     session.clear()
     session["language"] = lang
-    return redirect(session.get('language')+"/login")
+    return redirect("/login")
 
 @app.route("/login")
 def login():
@@ -243,10 +243,11 @@ def download_MInstagramBot():
             return "<center><h1>"+language[session['language']]['dlpage_MInstagramBot']+f"</h1></center><script>var a = document.createElement('a');a.href='{verurls[ver]}';a.click();</script>"
     return redirect("/")
 
-@app.route("/setlang/<language>?wtg=<wtg>", methods=["GET"])
-def change_lang(language, wtg=""):
-    session["language"] = language
-    return redirect(f"/{wtg}")
+@app.get("/setlang")
+def change_lang():
+    get_data = dict(request.values)
+    session["language"] = get_data["language"]
+    return redirect(f"/{get_data['wtg']}")
 
 @app.route("/", defaults={"path": "index"}, methods=["GET"])
 @app.route("/<path:path>", methods=["GET"])
