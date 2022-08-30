@@ -160,8 +160,7 @@ def login():
         return render_template(session.get('language')+"/Login.html")
     return redirect("/dashboard")
 
-def verify_username():
-    username = dict(request.values)["username"]
+def verify_username(username):
     if len(database.Export({"username":username})) <= 0:
         return True
     else:
