@@ -185,9 +185,10 @@ def validate_email(email):
         "X-RapidAPI-Host": "email-checker.p.rapidapi.com"
     }
     response = json.loads(requests.request("GET", url, headers=headers, params=querystring).text)
-    if not response["status"] == "invalid":
-        if response["disposable"] == False or response["disposable"] == "false":
-            return True
+    if "status" in response and "disposable" in response:
+        if not response["status"] == "invalid":
+            if response["disposable"] == False or response["disposable"] == "false":
+                return True
     return False
 
 @app.route("/signup", methods=["POST"])
