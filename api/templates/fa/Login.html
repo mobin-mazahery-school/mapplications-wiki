@@ -6,6 +6,7 @@
     <title>M-Applications</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='default.css') }}" />
     <link rel="stylesheet" href="{{ url_for('static', filename='loginsignup.css') }}" />
+    <script src="https://www.google.com/recaptcha/api.js" async defer></script>
 </head>
 
 <body>
@@ -19,6 +20,9 @@
             </p>
             <p>
                 <input type="password" id="password" name="password" placeholder=" رمز عبور" required="">
+            </p>
+            <p>
+                <center><div class="g-recaptcha" data-sitekey="6LfeV70hAAAAAEvx1xJl8bXU1ISL3QVYyeoTN8W4"></div></center>
             </p>
             <p>
                 <input type="submit" id="login" value="ورود">

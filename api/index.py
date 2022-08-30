@@ -121,14 +121,20 @@ language = json.loads("""{
         "dlpage_MInstagramBot":"در حال آماده سازی",
         "verification_sent_failed":"رمز عبور و تکرار آن با هم برابر نیستند!",
         "invalid_userdata":"نام کاربری یا رمز عبور نامعتبر است!",
-        "problem_doing_sth":"مشکلی پیش آمد. دوباره امتحان کنید."
+        "problem_doing_sth":"مشکلی پیش آمد. دوباره امتحان کنید.",
+        "captcha_failed":"کپچا نامعتبر است!",
+        "notavailabe_username":"نام کاربری موجود نمیباشد",
+        "notavailabe_email":"ایمیل وارد شده نامعتبر میباشد!"
     },
     "en":{
         "verification_sent_success":"Confirmation link has been sent to your EMail.",
         "dlpage_MInstagramBot":"Initializing",
         "verification_sent_failed":"Password and Retype of that don't match!",
         "invalid_userdata":"Invalid Username or Password!",
-        "problem_doing_sth":"Error occurred. Try again."
+        "problem_doing_sth":"Error occurred. Try again.",
+        "captcha_failed":"Invalid Captcha",
+        "notavailabe_username":"Username not available",
+        "notavailabe_email":"Invalid EMail address!"
     }
 }""")
 app = Flask(__name__)
@@ -154,16 +160,41 @@ def login():
         return render_template(session.get('language')+"/Login.html")
     return redirect("/dashboard")
 
-@app.route("/userverify")
 def verify_username():
     username = dict(request.values)["username"]
     if len(database.Export({"username":username})) <= 0:
-        return 'True'
+        return True
     else:
-        return 'False'
+        return False
+
+def check_captcha():
+    checkreq = requests.post(url="https://www.google.com/recaptcha/api/siteverify", data={
+        "secret":"6LfeV70hAAAAAMIHSvEpwNSGuZTNC0EBRYTTJbC9",
+        "response":request.form.get("g-recaptcha-response")
+    }).content.decode("utf-8")
+    checkreq = json.loads(checkreq)
+    if checkreq["success"] == True or checkreq["success"] == "true":
+        return "ok"
+    else:
+        return False
+
+def validate_email(email):
+    url = "https://email-checker.p.rapidapi.com/verify/v1"
+    querystring = {"email":email}
+    headers = {
+        "X-RapidAPI-Key": "23231242a4msh8eadf9243fedeccp16c6d7jsndf2c8337220e",
+        "X-RapidAPI-Host": "email-checker.p.rapidapi.com"
+    }
+    response = json.loads(requests.request("GET", url, headers=headers, params=querystring).text)
+    if not response["status"] == "invalid":
+        if response["disposable"] == False or response["disposable"] == "false":
+            return True
+    return False
 
 @app.route("/signup", methods=["POST"])
 def signup_post():
+    if not check_captcha() == "ok":
+        return render_template(session.get('language')+"/Signup.html", error_msg=language[session['language']]['captcha_failed'])
     if "username" in request.form.keys():
         if "email" in request.form.keys():
             if "password" in request.form.keys():
@@ -173,6 +204,10 @@ def signup_post():
                     password = request.form.get("password")
                     repass = request.form.get("repass")
                     if password == repass:
+                        if verify_username(username) == False:
+                            return render_template(session.get('language')+"/Signup.html", error_msg=language[session['language']]['notavailabe_username'])
+                        if validate_email(email) == False:
+                            return render_template(session.get('language')+"/Signup.html", error_msg=language[session['language']]['notavailabe_email'])
                         hash_object = hashlib.sha256(bytes(password,"utf-8"))
                         password = hash_object.hexdigest()
                         database.ChangeDB("verification")
@@ -202,6 +237,8 @@ def signup_post():
 @app.route("/login", methods=["POST"])
 def login_post():
     wtg = dict(request.values)["wtg"] if "wtg" in dict(request.values) else ""
+    if not check_captcha() == "ok":
+        return render_template(session.get('language')+"/Login.html", error_msg=language[session['language']]['captcha_failed'])
     if "username" in request.form.keys():
         if "password" in request.form.keys():
             username = request.form.get("username")

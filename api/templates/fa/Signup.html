@@ -6,6 +6,7 @@
     <title>M-Applications</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='default.css') }}" />
     <link rel="stylesheet" href="{{ url_for('static', filename='loginsignup.css') }}" />
+    <script src="https://www.google.com/recaptcha/api.js" async defer></script>
 </head>
 
 <body>
@@ -16,7 +17,7 @@
             <p style="color: white;background: red;padding: 5px;font-size: 0.75em;border-radius: 4px;border: 1px solid #C2C0CB;display:{% if error_msg %}block{% else %}none{% endif %};">{{ error_msg }}</p>
             <p style="color: white;background: limegreen;padding: 5px;font-size: 0.75em;border-radius: 4px;border: 1px solid #C2C0CB;display:{% if succes_msg %}block{% else %}none{% endif %};">{{ succes_msg }}</p>
             <p>
-                <input type="text" id="username" name="username" placeholder=" نام کاربری" required="">
+                <input type="text" id="username" name="username" placeholder=" نام کاربری" required=""  onchange='this.value = this.value.replace(" ", "");' onkeypress="return event.charCode != 32" title="حداقل 8 کاراکتر و حداکثر 15 تا" pattern="[A-Za-z0-9]{8,}" max="15" min="8">
             </p>
             <p>
                 <input type="email" id="email" name="email" placeholder=" ایمیل" required="">
@@ -26,6 +27,9 @@
             </p>
             <p>
                 <input type="password" id="repass" name="repass" placeholder=" تکرار رمز عبور" required="">
+            </p>
+            <p>
+                <center><div class="g-recaptcha" data-sitekey="6LfeV70hAAAAAEvx1xJl8bXU1ISL3QVYyeoTN8W4"></div></center>
             </p>
             <p>
                 <input type="submit" id="login" value="ثبت نام">
